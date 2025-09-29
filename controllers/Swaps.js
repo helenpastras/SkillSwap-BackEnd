@@ -2,13 +2,8 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 
-router.get('/sign-boken', (req, res) => {
-  const user = {
-    _id: 1,
-    username: 'marco',
-    password: 'polo'
-  }
-
+router.get('/swaps', (req, res) => {
+  
   const token = jwt.sign({ user }, process.env.JWT_SECRET);
   
   res.json({ token });
