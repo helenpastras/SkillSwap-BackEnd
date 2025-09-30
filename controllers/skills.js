@@ -78,7 +78,7 @@ router.get('/my-skills', verifyToken, async (req, res) => {
 });
 
 // GET SOMEONE ELSE'S SKILLS - for viewing another user's profile
-router.get('/user/:userId', verifyToken, async (req, res) => {
+router.get('/users/:userId', verifyToken, async (req, res) => {
   try {
     // Find skills for whoever they're looking at
     const skills = await Skill.find({ 
