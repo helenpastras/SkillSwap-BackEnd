@@ -20,20 +20,25 @@ const userSchema = new mongoose.Schema({
   // Their actual name (optional - they can add this later if they want)
   name: {
     type: String,
-    required: false,
   },
   
   // Where they're located - helpful for finding local skill swaps
   location: {
     type: String,
-    required: false,
   },
   
   // A little bio about themselves (also optional)
   bio: {
     type: String,
-    required: false,
-  },
+  },   
+  skillsOffered: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Skill'
+  }],
+  skillsWanted: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Skill'
+  }]
 }, {
   // This automatically adds createdAt and updatedAt fields - pretty handy!
   timestamps: true,
