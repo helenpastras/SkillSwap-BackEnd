@@ -38,7 +38,7 @@ const skillSchema = new mongoose.Schema({
   // How much time would this skill exchange take?
   timeFrame: {
     type: String,
-    enum: ['1-2 hours', '3-5 hours', '1 day', '2-3 days', '1 week', '2+ weeks', 'Ongoing'],
+    enum: ['','1-2 hours', '3-5 hours', '1 day', '2-3 days', '1 week', '2+ weeks', 'Ongoing'],
   },
   
   // More details about what this skill involves

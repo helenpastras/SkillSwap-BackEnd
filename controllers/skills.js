@@ -304,5 +304,15 @@ router.get('/search', verifyToken, async (req, res) => {
   }
 });
 
+// SHOW ONE SKILL - just show the one skill details
+router.get("/:skillId", verifyToken, async (req, res) => {
+  try {
+    const skill = await Skill.findById(req.params.skillId).populate(["user"])
+    res.status(200).json(skill)
+  } catch (err) {
+    res.status(500).json({ err: err.message })
+  }
+})
+
 // Send this router back to server.js so it can use all these routes
 module.exports = router;
