@@ -22,6 +22,34 @@ router.get('/', verifyToken, async (req, res) => {
   }
 });
 
+// GET ALL USERS skills for the SwapRequests- USer public view
+router.get('/public/:userId', verifyToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId, '-hashedPassword');
+
+    if (!user) {
+      return res.status(404).json({ err: 'User not found.' });
+    }
+
+    const skills = await Skill.find({ 
+      user: req.params.userId, 
+      isActive: true 
+    });
+
+    const skillsOffered = skills.filter(skill => skill.type === 'offered');
+    const skillsWanted = skills.filter(skill => skill.type === 'wanted');
+
+    res.json({
+      ...user.toObject(),
+      skillsOffered,
+      skillsWanted
+    });
+  } catch (err) {
+    console.log('Get public user error:', err.message);
+    res.status(500).json({ err: err.message });
+  }
+});
+
 // GET SPECIFIC USER - but only if you're looking at your own profile
 router.get('/:userId', verifyToken, async (req, res) => {
   try {
