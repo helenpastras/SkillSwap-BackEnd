@@ -314,5 +314,5 @@ router.get("/:skillId", verifyToken, async (req, res) => {
   }
 })
 
-// Send this router back to server.js so it can use all these route
+// Send this router back to server.js so it can use all these routes
 module.exports = router;
