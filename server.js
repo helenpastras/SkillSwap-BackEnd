@@ -80,7 +80,7 @@ app.use('/swap-requests', swapRequestsRouter);   // Swap Requests: /swap-request
 // ==============================================
 // START THE SERVER
 // ==============================================
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 The SkillSwap backend server is running on port ${PORT}!`);
   console.log(`📖 API Documentation:`);
