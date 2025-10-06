@@ -33,25 +33,6 @@ router.get('/', verifyToken, async (req, res) => {
   }
 });
 
-// get a specific request
-router.get('/:id', verifyToken, async (req, res) => {
-  try {
-    const request = await SwapRequest.findById(req.params.id)
-      .populate('requester', '_id username name location')
-      .populate('skillProvider', '_id username name location')
-      .populate('skillRequested')
-      .populate('skillOffered');
-
-    if (!request) {
-      return res.status(404).json({ error: 'Swap request not found' });
-    }
-
-    res.json(request);
-  } catch (err) {
-    console.log('Get single swap request error:', err.message);
-    res.status(500).json({ error: err.message });
-  }
-});
 
 // GET REQUESTS I RECEIVED - people asking to learn from me
 // This is your "inbox" of people who want your skills
@@ -88,6 +69,26 @@ router.get('/sent', verifyToken, async (req, res) => {
   } catch (err) {
     console.log('Get sent requests error:', err.message);
     res.status(500).json({ err: err.message });
+  }
+});
+
+// get a specific request
+router.get('/:id', verifyToken, async (req, res) => {
+  try {
+    const request = await SwapRequest.findById(req.params.id)
+      .populate('requester', '_id username name location')
+      .populate('skillProvider', '_id username name location')
+      .populate('skillRequested')
+      .populate('skillOffered');
+
+    if (!request) {
+      return res.status(404).json({ error: 'Swap request not found' });
+    }
+
+    res.json(request);
+  } catch (err) {
+    console.log('Get single swap request error:', err.message);
+    res.status(500).json({ error: err.message });
   }
 });
 
