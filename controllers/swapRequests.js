@@ -20,8 +20,8 @@ router.get('/', verifyToken, async (req, res) => {
         { skillProvider: req.user._id }   // Requests others sent to me
       ]
     })
-    .populate('requester', 'username name location')      // Who asked for the swap
-    .populate('skillProvider', 'username name location')  // Who has the skill they want
+    .populate('requester', '_id username name location')      // Who asked for the swap
+    .populate('skillProvider', '_id username name location')  // Who has the skill they want
     .populate('skillRequested')                           // What skill they want to learn
     .populate('skillOffered')                             // What skill they're offering in return
     .sort({ createdAt: -1 }); // Show newest first
@@ -39,8 +39,8 @@ router.get('/received', verifyToken, async (req, res) => {
   try {
     // Find requests where I'm the one with the skill they want
     const requests = await SwapRequest.find({ skillProvider: req.user._id })
-      .populate('requester', 'username name location')
-      .populate('skillProvider', 'username name location')
+      .populate('requester', '_id username name location')
+      .populate('skillProvider', '_id username name location')
       .populate('skillRequested')
       .populate('skillOffered')
       .sort({ createdAt: -1 });
@@ -58,8 +58,8 @@ router.get('/sent', verifyToken, async (req, res) => {
   try {
     // Find requests where I'm asking someone to teach me
     const requests = await SwapRequest.find({ requester: req.user._id })
-      .populate('requester', 'username name location')
-      .populate('skillProvider', 'username name location')
+      .populate('requester', '_id username name location')
+      .populate('skillProvider', '_id username name location')
       .populate('skillRequested')
       .populate('skillOffered')
       .sort({ createdAt: -1 });
@@ -107,8 +107,8 @@ router.post('/', verifyToken, async (req, res) => {
 
     // Send back the complete request with all the details filled in
     const populatedRequest = await SwapRequest.findById(swapRequest._id)
-      .populate('requester', 'username name location')
-      .populate('skillProvider', 'username name location')
+      .populate('requester', '_id username name location')
+      .populate('skillProvider', '_id username name location')
       .populate('skillRequested')
       .populate('skillOffered');
 
@@ -117,6 +117,33 @@ router.post('/', verifyToken, async (req, res) => {
     console.log('Create swap request error:', err.message);
     res.status(500).json({ err: err.message });
   }
+});
+
+
+router.delete('/:id', verifyToken, async (req, res) => {
+  const request = await SwapRequest.findById(req.params.id);
+  if (!request || request.requester.toString() !== req.user._id.toString()) {
+    return res.status(403).json({ error: 'Unauthorized or not found' });
+  }
+  await request.deleteOne();
+  res.json({ message: 'Request deleted' });
+  console.log("req.user._id:", req.user._id);
+console.log("request.requester:", request.requester);
+}); 
+
+router.put('/:id', verifyToken, async (req, res) => {
+  const request = await SwapRequest.findById(req.params.id);
+  if (!request || request.requester.toString() !== req.user._id.toString()) {
+    return res.status(403).json({ error: 'Unauthorized or not found' });
+  }
+
+  request.skillRequested = req.body.skillRequestedId;
+  request.skillOffered = req.body.skillOfferedId;
+  request.comments = req.body.comments;
+  request.requestMessage = req.body.requestMessage;
+
+  await request.save();
+  res.json({ message: 'Request updated', request });
 });
 
 // ACCEPT A SWAP REQUEST - "Yes, I'll teach you!"
@@ -151,8 +178,8 @@ router.put('/:requestId/accept', verifyToken, async (req, res) => {
       },
       { new: true } // Give us back the updated version
     )
-    .populate('requester', 'username name location')
-    .populate('skillProvider', 'username name location')
+    .populate('requester', '_id username name location')
+    .populate('skillProvider', '_id username name location')
     .populate('skillRequested')
     .populate('skillOffered');
 
@@ -195,8 +222,8 @@ router.put('/:requestId/decline', verifyToken, async (req, res) => {
       },
       { new: true } // Give us back the updated version
     )
-    .populate('requester', 'username name location')
-    .populate('skillProvider', 'username name location')
+    .populate('requester', '_id username name location _id')
+    .populate('skillProvider', '_id username name location _id')
     .populate('skillRequested')
     .populate('skillOffered');
 
