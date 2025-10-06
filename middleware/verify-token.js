@@ -26,6 +26,7 @@ function verifyToken(req, res, next) {
     // If it's valid, save the user info so other routes can use it
     // Now any route can access req.user to know who's logged in
     req.user = decoded.payload;
+    console.log("Decoded payload:", decoded.payload);
     
     // Continue to the actual route
     next();
